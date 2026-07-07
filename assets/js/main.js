@@ -170,6 +170,8 @@ const translations = {
     'form.sending': 'Enviando…',
     'form.success': 'Mensagem enviada! Respondo em até 24h.',
     'form.error': 'Algo deu errado. Tenta de novo ou me chama no WhatsApp.',
+    'form.btnSuccess': 'Mensagem enviada!',
+    'form.btnError': 'Erro — tentar de novo',
 
     'footer.tagline': 'Bonito vende, funcional converte<br>e eu faço os dois.',
     'footer.nav': 'Navegação',
@@ -358,6 +360,8 @@ const translations = {
     'form.sending': 'Sending…',
     'form.success': "Message sent! I'll reply within 24h.",
     'form.error': 'Something went wrong. Try again or message me on WhatsApp.',
+    'form.btnSuccess': 'Message sent!',
+    'form.btnError': 'Error — try again',
 
     'footer.tagline': 'Beautiful sells, functional converts,<br>and I do both.',
     'footer.nav': 'Navigation',
@@ -400,6 +404,13 @@ const caseData = {
     displayUrl: 'aceselectric.us',
     poster: 'assets/img/aces-desktop.webp',
     video: 'assets/videos/aces.mp4',
+    social: {
+      image: 'assets/img/aces-social.webp',
+      favicon: 'assets/img/aces-logo-pequena-transparente.png',
+      title: 'ACES Electrical Services — Licensed Electrical Contractor',
+      desc: 'Licensed commercial & residential electrical contractor serving VA, MD & DC. High-quality work and excellence on every project.',
+      domain: 'aceselectric.us'
+    },
     pagespeed: [100, 100, 100, 100],
     stack: ['html5', 'css', 'javascript', 'leaflet', 'cloudflare'],
     pt: {
@@ -430,6 +441,13 @@ const caseData = {
     displayUrl: 'quilombodoces.com.br',
     poster: 'assets/img/quilombo-doces-desktop.webp',
     video: 'assets/videos/quilombo.mp4',
+    social: {
+      image: 'assets/img/quilombo-social.webp',
+      favicon: 'assets/img/quilombo-doces-logo-pequena-transparente.png',
+      title: 'Quilombo Doces — Doces artesanais',
+      desc: 'Doces artesanais feitos com afeto. Monte o pedido e finalize direto no WhatsApp.',
+      domain: 'quilombodoces.com.br'
+    },
     pagespeed: [100, 100, 100, 100],
     stack: ['html5', 'css', 'javascript'],
     pt: {
@@ -460,6 +478,13 @@ const caseData = {
     displayUrl: 'coopmedmogi.com',
     poster: 'assets/img/coopmed-desktop.webp',
     video: 'assets/videos/coopmed.mp4',
+    social: {
+      image: 'assets/img/coopmed-social.webp',
+      favicon: 'assets/img/coopmed-logo-pequena-fundo-transparente.png',
+      title: 'Coopmed Mogi — Cooperativa de trabalho médico',
+      desc: 'Cooperativa de trabalho médico de Mogi das Cruzes e região.',
+      domain: 'coopmedmogi.com'
+    },
     pagespeed: [100, 100, 100, 100],
     stack: ['html5', 'css', 'javascript'],
     pt: {
@@ -494,7 +519,7 @@ const caseData = {
     posterMobile: 'assets/img/mentoria-route-mobile.webp',
     social: {
       image: 'assets/img/route-social.webp',
-      favicon: 'assets/img/route-favicon.svg',
+      favicon: 'assets/img/larissa-sayuri-route-logo-pequena-transparente.png',
       title: 'Mentoria ROUTE — Larissa Sayuri',
       desc: 'Your route to the life you want. Mentoria individual de desenvolvimento pessoal e carreira. PT & EN.',
       domain: 'larissasayuri.com'
@@ -529,6 +554,13 @@ const caseData = {
     displayUrl: 'hidro-sul.com',
     poster: 'assets/img/hidro-sul-desktop.webp',
     video: 'assets/videos/hidrosul.mp4',
+    social: {
+      image: 'assets/img/hidrosul-social.webp',
+      favicon: 'assets/img/hidro-sul-logo-pequena-transparente.png',
+      title: 'Hidro-Sul — Individualização de água e gás',
+      desc: 'Especialista técnico em individualização de água e gás para condomínios e empresas parceiras.',
+      domain: 'hidro-sul.com'
+    },
     pagespeed: [100, 100, 100, 100],
     stack: ['html5', 'css', 'javascript', 'cloudflare'],
     pt: {
@@ -559,6 +591,13 @@ const caseData = {
     displayUrl: 'daphinesantana.com.br',
     poster: 'assets/img/daphine-santana-desktop.webp',
     video: 'assets/videos/daphine.mp4',
+    social: {
+      image: 'assets/img/daphine-social.webp',
+      favicon: 'assets/img/daphine-santana-logo-pequena-transparente.png',
+      title: 'Daphine Santana — Psicomotricidade',
+      desc: 'Psicomotricista no Alto Tietê, dedicada ao desenvolvimento infantil com acolhimento e técnica.',
+      domain: 'daphinesantana.com.br'
+    },
     pagespeed: [100, 100, 100, 100],
     stack: ['html5', 'css', 'javascript', 'cloudflare'],
     pt: {
@@ -680,18 +719,50 @@ document.querySelectorAll(
 const processProgress = document.getElementById('processProgress');
 const steps = document.querySelectorAll('.step');
 
+const mqVertical = window.matchMedia('(max-width: 540px)');
+
 function updateProcessProgress() {
   if (!steps.length || !processProgress) return;
 
   const processSection = document.querySelector('.process__list');
   if (!processSection) return;
 
-  const rect = processSection.getBoundingClientRect();
   const viewportH = window.innerHeight;
+  const track = document.querySelector('.process__track');
+  const vertical = mqVertical.matches &&
+                   track && getComputedStyle(track).display !== 'none';
+
+  if (vertical) {
+    // ----- Mobile: linha VERTICAL, enche do 1º nó até a linha de referência (meio da tela) -----
+    const nums = [...steps].map(s => s.querySelector('.step__num').getBoundingClientRect());
+    const firstC = nums[0].top + nums[0].height / 2;
+    const lastC = nums[nums.length - 1].top + nums[nums.length - 1].height / 2;
+    const span = Math.max(1, lastC - firstC);
+    const fillY = viewportH * 0.5;
+
+    const filled = Math.max(0, Math.min(span, fillY - firstC));
+    processProgress.style.width = '';                 // limpa estado horizontal
+    processProgress.style.height = (filled / span * 100) + '%';
+
+    // Cada nó acende quando a linha o alcança (centro cruza o meio da tela)
+    let activeIdx = 0;
+    for (let i = 0; i < nums.length; i++) {
+      const c = nums[i].top + nums[i].height / 2;
+      if (c <= fillY + 0.5) activeIdx = i;
+    }
+    steps.forEach((step, idx) => {
+      step.classList.toggle('is-passed', idx < activeIdx);
+      step.classList.toggle('is-active', idx === activeIdx);
+    });
+    return;
+  }
+
+  // ----- Desktop/tablet: linha HORIZONTAL (comportamento original) -----
+  processProgress.style.height = '';                  // limpa estado vertical
+  const rect = processSection.getBoundingClientRect();
 
   // Começa a preencher assim que a seção entra (topo a 80% da tela) e completa
-  // quando ela chega ao centro da tela. Antes era 70%→30%, o que só enchia
-  // tudo bem no fim do scroll.
+  // quando ela chega ao centro da tela.
   const start = viewportH * 0.8;
   const end = viewportH * 0.5;
 
@@ -704,11 +775,9 @@ function updateProcessProgress() {
     progress = 1;
   }
 
-  // Atualiza barra de progresso
   processProgress.style.width = (progress * 100) + '%';
 
-  // A linha agora termina no 04, com os nós equidistantes (0, 1/3, 2/3, 1).
-  // Cada nó acende quando o preenchimento chega NELE — sincronizado com a linha.
+  // Nós equidistantes (0, 1/3, 2/3, 1); cada um acende quando o preenchimento chega nele.
   const last = steps.length - 1;
   let activeIdx = 0;
   for (let i = 0; i < steps.length; i++) {
@@ -724,31 +793,54 @@ window.addEventListener('scroll', updateProcessProgress, { passive: true });
 window.addEventListener('resize', updateProcessProgress, { passive: true });
 updateProcessProgress();
 
-/* -------- Process: linha termina no centro do círculo 04 (ancorada no nó) -------- */
+/* -------- Process: ancora a linha nos centros dos nós (horizontal e vertical) -------- */
 function layoutProcessTrack() {
   const wrap = document.querySelector('.process__wrap');
   const track = document.querySelector('.process__track');
+  const firstNum = document.querySelector('.process__list .step:first-child .step__num');
   const lastNum = document.querySelector('.process__list .step:last-child .step__num');
-  if (!wrap || !track || !lastNum) return;
-  // Em telas onde a track some (tablet/mobile), deixa o CSS no controle.
-  if (getComputedStyle(track).display === 'none') { track.style.right = ''; return; }
+  if (!wrap || !track || !firstNum || !lastNum) return;
+
+  // Tablet (linha some): deixa o CSS no controle e zera qualquer inline.
+  if (getComputedStyle(track).display === 'none') {
+    track.style.right = ''; track.style.top = ''; track.style.height = ''; track.style.left = '';
+    return;
+  }
+
   const wrapRect = wrap.getBoundingClientRect();
-  const numRect = lastNum.getBoundingClientRect();
-  const centerX = numRect.left + numRect.width / 2 - wrapRect.left;
-  track.style.right = Math.max(0, wrapRect.width - centerX) + 'px';
+  const fr = firstNum.getBoundingClientRect();
+  const lr = lastNum.getBoundingClientRect();
+
+  if (mqVertical.matches) {
+    // Vertical: do centro do 1º nó ao centro do último
+    const topY = fr.top + fr.height / 2 - wrapRect.top;
+    const botY = lr.top + lr.height / 2 - wrapRect.top;
+    const x = fr.left + fr.width / 2 - wrapRect.left;
+    track.style.left = x + 'px';
+    track.style.right = 'auto';
+    track.style.top = topY + 'px';
+    track.style.height = Math.max(0, botY - topY) + 'px';
+  } else {
+    // Horizontal: a linha termina no centro do último círculo
+    track.style.top = ''; track.style.height = ''; track.style.left = '';
+    const centerX = lr.left + lr.width / 2 - wrapRect.left;
+    track.style.right = Math.max(0, wrapRect.width - centerX) + 'px';
+  }
 }
 window.addEventListener('load', layoutProcessTrack, { passive: true });
 window.addEventListener('resize', layoutProcessTrack, { passive: true });
 layoutProcessTrack();
 
-/* -------- Form submit (Web3Forms) -------- */
-// Cole sua access key do Web3Forms aqui (https://web3forms.com).
-// Enquanto estiver com o valor padrão, o envio é bloqueado e avisa no console.
+// Ao cruzar o breakpoint (troca horizontal <-> vertical), recalcula linha e nós
+mqVertical.addEventListener('change', () => { layoutProcessTrack(); updateProcessProgress(); });
+
+/* -------- Form submit (Web3Forms) — o feedback acontece no próprio botão -------- */
 const WEB3FORMS_KEY = 'dd6a05a0-db1e-4241-86e2-19a9a7386787';
 
 const form = document.getElementById('contactForm');
-const formStatus = document.getElementById('formStatus');
 const formSubmit = document.getElementById('contactSubmit');
+const btnLabel = formSubmit ? formSubmit.querySelector('.btn__label') : null;
+const btnIcon = formSubmit ? formSubmit.querySelector('.btn__icon') : null;
 
 function currentLang() {
   return document.documentElement.lang.startsWith('pt') ? 'pt' : 'en';
@@ -757,18 +849,43 @@ function t(key) {
   const lang = currentLang();
   return (translations[lang] && translations[lang][key]) || '';
 }
-function setFormStatus(key, kind) {
-  if (!formStatus) return;
-  formStatus.textContent = t(key);
-  formStatus.classList.remove('form__status--ok', 'form__status--err');
-  if (kind) formStatus.classList.add('form__status--' + kind);
-  formStatus.hidden = false;
-}
-function setSubmitting(isSubmitting) {
+
+const BTN_ICONS = {
+  idle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>',
+  success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
+};
+
+let btnRevertTimer = null;
+function setBtnState(state) {
   if (!formSubmit) return;
-  formSubmit.disabled = isSubmitting;
-  const label = formSubmit.querySelector('[data-i18n="form.submit"]');
-  if (label) label.textContent = isSubmitting ? t('form.sending') : t('form.submit');
+  clearTimeout(btnRevertTimer);
+  formSubmit.classList.remove('is-loading', 'is-success', 'is-error');
+  const label = (key) => { if (btnLabel) btnLabel.textContent = t(key); };
+  const icon = (html) => { if (btnIcon) btnIcon.innerHTML = html; };
+
+  if (state === 'loading') {
+    formSubmit.classList.add('is-loading');
+    formSubmit.disabled = true;
+    label('form.sending');
+    icon(''); // o spinner (via CSS) toma o lugar do ícone
+  } else if (state === 'success') {
+    formSubmit.classList.add('is-success');
+    formSubmit.disabled = true;
+    label('form.btnSuccess');
+    icon(BTN_ICONS.success);
+    btnRevertTimer = setTimeout(() => setBtnState('idle'), 4500);
+  } else if (state === 'error') {
+    formSubmit.classList.add('is-error');
+    formSubmit.disabled = false;
+    label('form.btnError');
+    icon(BTN_ICONS.error);
+    btnRevertTimer = setTimeout(() => setBtnState('idle'), 4500);
+  } else { // idle
+    formSubmit.disabled = false;
+    label('form.submit');
+    icon(BTN_ICONS.idle);
+  }
 }
 
 form?.addEventListener('submit', async (e) => {
@@ -776,7 +893,7 @@ form?.addEventListener('submit', async (e) => {
 
   // Honeypot: bot preencheu o campo escondido — finge sucesso e ignora
   if (form.querySelector('[name="botcheck"]')?.checked) {
-    setFormStatus('form.success', 'ok');
+    setBtnState('success');
     form.reset();
     return;
   }
@@ -787,19 +904,12 @@ form?.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (WEB3FORMS_KEY === 'COLE_SUA_ACCESS_KEY_AQUI') {
-    console.warn('[Chibo Dev] Defina WEB3FORMS_KEY em main.js para ativar o formulário.');
-    setFormStatus('form.error', 'err');
-    return;
-  }
-
   const payload = new FormData(form);
   payload.append('access_key', WEB3FORMS_KEY);
   payload.append('subject', 'Novo contato pelo site · Chibo Dev');
   payload.append('from_name', 'Site Chibo Dev');
 
-  setSubmitting(true);
-  setFormStatus('form.sending', null);
+  setBtnState('loading');
 
   try {
     const res = await fetch('https://api.web3forms.com/submit', {
@@ -809,15 +919,13 @@ form?.addEventListener('submit', async (e) => {
     });
     const data = await res.json();
     if (res.ok && data.success) {
-      setFormStatus('form.success', 'ok');
+      setBtnState('success');
       form.reset();
     } else {
-      setFormStatus('form.error', 'err');
+      setBtnState('error');
     }
   } catch (err) {
-    setFormStatus('form.error', 'err');
-  } finally {
-    setSubmitting(false);
+    setBtnState('error');
   }
 });
 
@@ -876,7 +984,7 @@ function openCaseModal(caseId) {
     : { eyebrow: 'A detail most people skip', note: 'The polish starts before the click: this is exactly how the link shows up when it’s shared.', checks: ['Its own browser-tab icon', 'A polished preview when shared'] };
   const checksHtml = S.checks.map(c => `<li>${c}</li>`).join('');
   const socialHtml = cfg.social
-    ? `<div class="modal__social"><div class="modal__social-txt"><p class="modal__social-eyebrow">${S.eyebrow}</p><p class="modal__social-note">${S.note}</p><ul class="modal__social-checks">${checksHtml}</ul></div><div class="social-card"><div class="social-card__img"><img src="${cfg.social.image}" alt="${cfg.social.title}" loading="lazy"></div><div class="social-card__body"><span class="social-card__title">${cfg.social.title}</span><span class="social-card__desc">${cfg.social.desc}</span><span class="social-card__domain">${cfg.social.favicon ? `<img class="social-card__favicon" src="${cfg.social.favicon}" alt="" aria-hidden="true">` : ''}${cfg.social.domain}</span></div></div></div>`
+    ? `<div class="modal__social"><div class="modal__social-txt"><p class="modal__social-eyebrow">${S.eyebrow}</p><p class="modal__social-note">${S.note}</p><ul class="modal__social-checks">${checksHtml}</ul></div><div class="social-card"><div class="social-card__img"><img src="${cfg.social.image}" alt="${cfg.social.title}" loading="lazy"></div><div class="social-card__body"><span class="social-card__title">${cfg.social.title}</span><span class="social-card__desc">${cfg.social.desc}</span><span class="social-card__domain">${cfg.social.favicon ? `<img class="social-card__favicon" src="${cfg.social.favicon}" alt="" aria-hidden="true" onerror="this.remove()">` : ''}${cfg.social.domain}</span></div></div></div>`
     : '';
 
   modalStage.innerHTML =

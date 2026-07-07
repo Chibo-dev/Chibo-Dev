@@ -286,6 +286,7 @@ section {
   letter-spacing: -0.005em;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 .btn svg { width: 16px; height: 16px; }
 .btn--sm { padding: 8px 14px; font-size: 13px; }
@@ -3453,4 +3454,96 @@ img.testimonial__avatar {
   color: #c0392b;
   border-color: rgba(192, 57, 43, 0.35);
   background: rgba(192, 57, 43, 0.06);
+}
+
+/* ============================================================
+   AJUSTES RESPONSIVOS · mobile (jul/2026)
+   1) Texto justificado onde faz sentido
+   2) Botão do formulário com estados (transforma no lugar)
+   3) Logos em grid alinhado no mobile
+   4) Botões hero + CTA full-width em telas estreitas
+   5) Processo: timeline VERTICAL que enche no scroll (1 coluna)
+   ============================================================ */
+
+/* 1) Texto corrido justificado — hifenização segue o lang (PT/EN) */
+.service__desc,
+.case__desc,
+.about__content p,
+.faq__answer p,
+.testimonial__quote {
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* 2) Botão do formulário: loading / success / error no próprio botão */
+#contactSubmit .btn__icon:empty { display: none; }
+#contactSubmit .btn__spinner { display: none; }
+#contactSubmit.is-loading { cursor: progress; }
+#contactSubmit.is-loading .btn__spinner {
+  display: inline-flex;
+  animation: btnSpin .7s linear infinite;
+}
+#contactSubmit.is-success { background: var(--accent); color: var(--accent-text); }
+#contactSubmit.is-error { background: #ff5a5a; color: #fff; }
+[data-theme="light"] #contactSubmit.is-error { background: #d64545; color: #fff; }
+#contactSubmit:disabled { opacity: 1; }
+#contactSubmit:disabled:hover { transform: none; box-shadow: none; }
+@keyframes btnSpin { to { transform: rotate(360deg); } }
+
+/* 3) Logos: grid alinhado no mobile (fim do desalinhamento do wrap) */
+@media (max-width: 640px) {
+  .logos__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 20px;
+    justify-items: center;
+    align-items: center;
+  }
+  .logo-img { max-height: 36px; max-width: 100%; }
+}
+
+/* 4) Botões iguais (hero + CTA): empilha full-width em telas estreitas */
+@media (max-width: 600px) {
+  .hero__cta { flex-direction: column; align-items: stretch; }
+  .hero__cta .btn { width: 100%; }
+
+  .cta-band__actions { flex-direction: column; align-items: stretch; width: 100%; }
+  .cta-band__actions .btn { width: 100%; }
+}
+
+/* 5) Processo: linha VERTICAL que enche no scroll (mobile, 1 coluna) */
+@media (max-width: 540px) {
+  /* passo vira linha: número à esquerda, texto à direita */
+  .step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    column-gap: 20px;
+    align-items: start;
+  }
+  .step__num { margin-bottom: 0; }
+
+  /* track volta a aparecer, agora vertical (JS ancora topo/altura nos nós) */
+  .process__track {
+    display: block;
+    top: 28px;
+    bottom: 28px;
+    left: 28px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+  .process__progress {
+    width: 100%;
+    height: 0;
+    transition: height .6s var(--ease);
+  }
+  .process__progress::after {
+    top: auto;
+    bottom: -4px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
 }
