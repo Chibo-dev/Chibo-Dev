@@ -918,9 +918,11 @@ form?.addEventListener('submit', async (e) => {
       setBtnState('success');
       form.reset();
     } else {
+      console.error('[Web3Forms] falhou:', res.status, data);
       setBtnState('error');
     }
   } catch (err) {
+    console.error('[Web3Forms] erro de rede/fetch:', err);
     setBtnState('error');
   }
 });
