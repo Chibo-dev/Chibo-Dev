@@ -166,11 +166,11 @@ const translations = {
     'form.name': 'Nome',
     'form.email': 'E-mail',
     'form.msg': 'Me conta sua ideia',
-    'form.submit': 'Enviar mensagem',
-    'form.sending': 'Enviando…',
+    'form.submit': 'Enviar e-mail',
+    'form.sending': 'Enviando e-mail…',
     'form.success': 'Mensagem enviada! Respondo em até 24h.',
     'form.error': 'Algo deu errado. Tenta de novo ou me chama no WhatsApp.',
-    'form.btnSuccess': 'Mensagem enviada!',
+    'form.btnSuccess': 'E-mail enviado!',
     'form.btnError': 'Erro — tentar de novo',
 
     'footer.tagline': 'Bonito vende, funcional converte<br>e eu faço os dois.',
@@ -356,11 +356,11 @@ const translations = {
     'form.name': 'Name',
     'form.email': 'Email',
     'form.msg': 'Tell me your idea',
-    'form.submit': 'Send message',
-    'form.sending': 'Sending…',
+    'form.submit': 'Send email',
+    'form.sending': 'Sending email…',
     'form.success': "Message sent! I'll reply within 24h.",
     'form.error': 'Something went wrong. Try again or message me on WhatsApp.',
-    'form.btnSuccess': 'Message sent!',
+    'form.btnSuccess': 'Email sent!',
     'form.btnError': 'Error — try again',
 
     'footer.tagline': 'Beautiful sells, functional converts,<br>and I do both.',
@@ -835,7 +835,7 @@ layoutProcessTrack();
 mqVertical.addEventListener('change', () => { layoutProcessTrack(); updateProcessProgress(); });
 
 /* -------- Form submit (Web3Forms) — o feedback acontece no próprio botão -------- */
-const WEB3FORMS_KEY = 'dd6a05a0-db1e-4241-86e2-19a9a7386787';
+const WEB3FORMS_KEY = 'c8abe88c-6bf7-4c87-b850-7f54d83f8451';
 
 const form = document.getElementById('contactForm');
 const formSubmit = document.getElementById('contactSubmit');
@@ -856,10 +856,8 @@ const BTN_ICONS = {
   error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'
 };
 
-let btnRevertTimer = null;
 function setBtnState(state) {
   if (!formSubmit) return;
-  clearTimeout(btnRevertTimer);
   formSubmit.classList.remove('is-loading', 'is-success', 'is-error');
   const label = (key) => { if (btnLabel) btnLabel.textContent = t(key); };
   const icon = (html) => { if (btnIcon) btnIcon.innerHTML = html; };
@@ -874,13 +872,11 @@ function setBtnState(state) {
     formSubmit.disabled = true;
     label('form.btnSuccess');
     icon(BTN_ICONS.success);
-    btnRevertTimer = setTimeout(() => setBtnState('idle'), 4500);
   } else if (state === 'error') {
     formSubmit.classList.add('is-error');
     formSubmit.disabled = false;
     label('form.btnError');
     icon(BTN_ICONS.error);
-    btnRevertTimer = setTimeout(() => setBtnState('idle'), 4500);
   } else { // idle
     formSubmit.disabled = false;
     label('form.submit');
@@ -926,6 +922,14 @@ form?.addEventListener('submit', async (e) => {
     }
   } catch (err) {
     setBtnState('error');
+  }
+});
+
+// Assim que o usuário volta a digitar depois de enviar (ou de um erro),
+// o botão retorna pro estado inicial "Enviar e-mail".
+form?.addEventListener('input', () => {
+  if (formSubmit && (formSubmit.classList.contains('is-success') || formSubmit.classList.contains('is-error'))) {
+    setBtnState('idle');
   }
 });
 
